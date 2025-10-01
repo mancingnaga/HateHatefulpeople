@@ -55,6 +55,7 @@
       background: #ffcc00;
       border: none;
       border-radius: 5px;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -66,15 +67,28 @@
     <button onclick="submitGuess()">Guess</button>
   </div>
   <div id="message"></div>
+  <button id="restartBtn" style="display:none;" onclick="restartGame()">Restart</button>
 
   <script>
-    const words = ["APPLE", "GRAPE", "MANGO", "BERRY", "LEMON", "BEACH", "STYLE", "ENTER" ];
-    const secret = words[Math.floor(Math.random() * words.length)];
-    const board = document.getElementById("board");
-    const message = document.getElementById("message");
-    let attempts = 0;
+    const words = [
+      "APPLE", "GRAPE", "MANGO", "BERRY", "LEMON", 
+      "BEACH", "STYLE", "ENTER", "WATER", "STONE",
+      "CLOUD", "GREEN", "BLACK", "WHITE", "PEACH",
+      "CHAIR", "TABLE", "HOUSE", "MUSIC", "LIGHT"
+    ];
 
-    function createBoard() {
+    let secret, board, message, attempts;
+
+    function initGame() {
+      board = document.getElementById("board");
+      message = document.getElementById("message");
+      attempts = 0;
+      secret = words[Math.floor(Math.random() * words.length)];
+      board.innerHTML = "";
+      message.textContent = "";
+      document.getElementById("guessInput").value = "";
+      document.getElementById("restartBtn").style.display = "none";
+
       for (let i = 0; i < 30; i++) {
         const tile = document.createElement("div");
         tile.classList.add("tile");
@@ -109,12 +123,18 @@
 
       if (guess === secret) {
         message.textContent = "🎉 You guessed it!";
+        document.getElementById("restartBtn").style.display = "inline-block";
       } else if (attempts === 6) {
         message.textContent = "❌ Out of tries! Word was: " + secret;
+        document.getElementById("restartBtn").style.display = "inline-block";
       }
     }
 
-    createBoard();
+    function restartGame() {
+      initGame();
+    }
+
+    initGame();
   </script>
 </body>
 </html>
