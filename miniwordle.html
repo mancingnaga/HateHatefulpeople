@@ -67,7 +67,8 @@
     <button onclick="submitGuess()">Guess</button>
   </div>
   <div id="message"></div>
-  <button id="restartBtn" style="display:none;" onclick="restartGame()">Restart</button>
+  <!-- restart button awalnya hidden -->
+  <button id="restartBtn" style="display:none;">Restart</button>
 
   <script>
     const words = [
@@ -77,27 +78,37 @@
       "CHAIR", "TABLE", "HOUSE", "MUSIC", "LIGHT"
     ];
 
-    let secret, board, message, attempts;
+    let secret, attempts;
 
     function initGame() {
-      board = document.getElementById("board");
-      message = document.getElementById("message");
+      const board = document.getElementById("board");
+      const message = document.getElementById("message");
+      const guessInput = document.getElementById("guessInput");
+      const restartBtn = document.getElementById("restartBtn");
+
       attempts = 0;
       secret = words[Math.floor(Math.random() * words.length)];
       board.innerHTML = "";
       message.textContent = "";
-      document.getElementById("guessInput").value = "";
-      document.getElementById("restartBtn").style.display = "none";
+      guessInput.value = "";
+      restartBtn.style.display = "none";
 
       for (let i = 0; i < 30; i++) {
         const tile = document.createElement("div");
         tile.classList.add("tile");
         board.appendChild(tile);
       }
+
+      // pastikan tombol restart bisa di klik
+      restartBtn.onclick = initGame;
     }
 
     function submitGuess() {
+      const board = document.getElementById("board");
+      const message = document.getElementById("message");
       const guessInput = document.getElementById("guessInput");
+      const restartBtn = document.getElementById("restartBtn");
+
       let guess = guessInput.value.toUpperCase();
       if (guess.length !== 5) {
         message.textContent = "Enter a 5-letter word!";
@@ -123,15 +134,11 @@
 
       if (guess === secret) {
         message.textContent = "🎉 You guessed it!";
-        document.getElementById("restartBtn").style.display = "inline-block";
+        restartBtn.style.display = "inline-block";
       } else if (attempts === 6) {
         message.textContent = "❌ Out of tries! Word was: " + secret;
-        document.getElementById("restartBtn").style.display = "inline-block";
+        restartBtn.style.display = "inline-block";
       }
-    }
-
-    function restartGame() {
-      initGame();
     }
 
     initGame();
