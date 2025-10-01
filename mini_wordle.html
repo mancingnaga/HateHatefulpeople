@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Wordle</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      padding-top: 30px;
+    }
+    h1 { color: #ffcc00; }
+    #board {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-gap: 8px;
+      margin: 20px 0;
+    }
+    .tile {
+      width: 60px;
+      height: 60px;
+      border: 2px solid #555;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      text-transform: uppercase;
+      background: #222;
+      color: white;
+    }
+    .correct { background: #538d4e; }
+    .present { background: #b59f3b; }
+    .absent { background: #3a3a3c; }
+    #message { margin-top: 20px; font-size: 18px; }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      text-transform: uppercase;
+      margin-right: 5px;
+      width: 100px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #ffcc00;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mini Wordle</h1>
+  <div id="board"></div>
+  <div>
+    <input type="text" id="guessInput" maxlength="5" />
+    <button onclick="submitGuess()">Guess</button>
+  </div>
+  <div id="message"></div>
+
+  <script>
+    const words = ["APPLE", "GRAPE", "MANGO", "BERRY", "LEMON"];
+    const secret = words[Math.floor(Math.random() * words.length)];
+    const board = document.getElementById("board");
+    const message = document.getElementById("message");
+    let attempts = 0;
+
+    function createBoard() {
+      for (let i = 0; i < 30; i++) {
+        const tile = document.createElement("div");
+        tile.classList.add("tile");
+        board.appendChild(tile);
+      }
+    }
+
+    function submitGuess() {
+      const guessInput = document.getElementById("guessInput");
+      let guess = guessInput.value.toUpperCase();
+      if (guess.length !== 5) {
+        message.textContent = "Enter a 5-letter word!";
+        return;
+      }
+      if (attempts >= 6) return;
+
+      for (let i = 0; i < 5; i++) {
+        const tile = board.children[attempts * 5 + i];
+        tile.textContent = guess[i];
+
+        if (guess[i] === secret[i]) {
+          tile.classList.add("correct");
+        } else if (secret.includes(guess[i])) {
+          tile.classList.add("present");
+        } else {
+          tile.classList.add("absent");
+        }
+      }
+
+      attempts++;
+      guessInput.value = "";
+
+      if (guess === secret) {
+        message.textContent = "🎉 You guessed it!";
+      } else if (attempts === 6) {
+        message.textContent = "❌ Out of tries! Word was: " + secret;
+      }
+    }
+
+    createBoard();
+  </script>
+</body>
+</html>
